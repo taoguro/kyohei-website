@@ -2,22 +2,9 @@
 
 import { useState, useEffect } from "react"
 import Image from "next/image"
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
+import { motion, useScroll, useTransform } from "framer-motion"
 import { useMousePosition } from "@/hooks/use-mouse-position"
-import {
-  Instagram,
-  Youtube,
-  Twitch,
-  Twitter,
-  Music,
-  Calendar,
-  User,
-  MessageCircle,
-  Sparkles,
-  Menu,
-  X,
-  ChevronRight,
-} from "lucide-react"
+import { Instagram, Youtube, Twitch, Twitter, Music, Calendar, User, MessageCircle, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { PsychedelicBackground } from "@/components/psychedelic-background"
@@ -29,10 +16,11 @@ export default function Home() {
   const mousePosition = useMousePosition()
   const [activeAvatar, setActiveAvatar] = useState(0)
   const [isHovering, setIsHovering] = useState(false)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [activeSection, setActiveSection] = useState("home")
   const { scrollYProgress } = useScroll()
   const rotation = useTransform(scrollYProgress, [0, 1], [0, 360])
   const scale = useTransform(scrollYProgress, [0, 0.5], [1, 1.5])
+  const headerOpacity = useTransform(scrollYProgress, [0, 0.1], [0, 1])
   const avatars = [
     "/images/うざ眼鏡.svg",
     "/images/パーカー.svg",
@@ -81,23 +69,28 @@ export default function Home() {
     { id: "contact", ja: "コンタクト", en: "CONTACT" },
   ]
 
-  // モバイルメニューを閉じてスクロールする関数
-  const handleMenuItemClick = (id: string) => {
-    setMobileMenuOpen(false)
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
-  }
-
-  // モバイルメニューが開いている時は背景スクロールを無効にする
+  // アクティブなセクションを検出
   useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = ""
+    const handleScroll = () => {
+      const sections = menuItems.map((item) => item.id)
+
+      for (const section of sections) {
+        const element = document.getElementById(section)
+        if (element) {
+          const rect = element.getBoundingClientRect()
+          if (rect.top <= 150 && rect.bottom >= 150) {
+            setActiveSection(section)
+            break
+          }
+        }
+      }
     }
+
+    window.addEventListener("scroll", handleScroll)
     return () => {
-      document.body.style.overflow = ""
+      window.removeEventListener("scroll", handleScroll)
     }
-  }, [mobileMenuOpen])
+  }, [menuItems])
 
   return (
     <main className="min-h-screen overflow-hidden bg-black text-white font-psychedelic relative">
@@ -107,137 +100,81 @@ export default function Home() {
       {/* 回転する顔の背景 */}
       <RotatingFace />
 
-      {/* ヘッダー */}
-      <header className="fixed top-0 left-0 right-0 z-50 p-4 md:p-6 flex justify-between items-center backdrop-blur-md bg-black/20">
-        <motion.h1
-          className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-yellow-500 to-cyan-500"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          KYOHEI
-        </motion.h1>
+      {/* 新しいヘッダー */}
+      <motion.header
+        className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-black/20"
+        style={{ opacity: headerOpacity }}
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ type: "spring", stiffness: 100, damping: 20 }}
+      >
+        {/* ネオンライン上部 */}
+        <motion.div
+          className="h-1 w-full bg-gradient-to-r from-pink-500 via-yellow-500 to-cyan-500"
+          animate={{
+            backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+            transition: { duration: 10, repeat: Number.POSITIVE_INFINITY },
+          }}
+          style={{ backgroundSize: "200% 200%" }}
+        />
 
-        {/* デスクトップナビゲーション */}
-        <nav className="hidden md:block">
-          <ul className="flex space-x-6">
-            {menuItems.map((item, index) => (
-              <motion.li
-                key={index}
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <a
-                  href={`#${item.id}`}
-                  className="relative text-base hover:text-pink-400 transition-colors duration-300 group font-bold"
-                >
-                  {item.en}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-500 via-yellow-500 to-cyan-500 transition-all duration-300 group-hover:w-full"></span>
-                </a>
-              </motion.li>
-            ))}
-          </ul>
-        </nav>
-
-        {/* モバイルメニューボタン */}
-        <button
-          className="md:hidden text-white p-2 rounded-md hover:bg-white/10 transition-colors"
-          onClick={() => setMobileMenuOpen(true)}
-          aria-label="メニューを開く"
-        >
-          <Menu className="w-7 h-7" />
-        </button>
-
-        {/* モバイルメニュー */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div
-              className="fixed inset-0 bg-black/95 backdrop-blur-lg z-50 flex flex-col"
-              initial={{ opacity: 0, x: "100%" }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 py-2 flex items-center justify-between">
+          {/* ロゴ部分 */}
+          <motion.div className="flex items-center" whileHover={{ scale: 1.05 }}>
+            <motion.h1
+              className="text-xl sm:text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-yellow-500 to-cyan-500"
+              animate={textShadowAnimation}
             >
-              <div className="flex justify-between items-center p-5 border-b border-white/10">
-                <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-yellow-500 to-cyan-500">
-                  KYOHEI MENU
-                </h2>
-                <button
-                  className="text-white p-2 rounded-md hover:bg-white/10 transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                  aria-label="メニューを閉じる"
-                >
-                  <X className="w-7 h-7" />
-                </button>
-              </div>
+              KYOHEI
+            </motion.h1>
+          </motion.div>
 
-              <nav className="flex-1 overflow-y-auto py-8">
-                <ul className="space-y-6 px-6">
-                  {menuItems.map((item, index) => (
-                    <motion.li
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: index * 0.1 }}
-                      className="border-b border-white/10 pb-5"
+          {/* ナビゲーション - モバイルでも表示 */}
+          <nav className="flex items-center">
+            <div className="overflow-x-auto hide-scrollbar py-1 max-w-[calc(100vw-120px)]">
+              <ul className="flex space-x-1 sm:space-x-3 md:space-x-6 whitespace-nowrap px-1">
+                {menuItems.map((item, index) => (
+                  <motion.li
+                    key={index}
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  >
+                    <a
+                      href={`#${item.id}`}
+                      className={cn(
+                        "relative text-xs sm:text-sm md:text-base transition-colors duration-300 group font-bold px-1 sm:px-2 py-1",
+                        activeSection === item.id
+                          ? "text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-yellow-500 to-cyan-500"
+                          : "text-gray-300 hover:text-white",
+                      )}
                     >
-                      <button
-                        onClick={() => handleMenuItemClick(item.id)}
-                        className="text-2xl font-bold w-full text-left flex justify-between items-center group py-3"
-                      >
-                        <div className="flex items-center">
-                          <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-yellow-500 to-cyan-500">
-                            {item.en}
-                          </span>
-                          <span className="ml-3 text-base text-gray-400 group-hover:text-white transition-colors">
-                            {item.ja}
-                          </span>
-                        </div>
-                        <ChevronRight className="w-6 h-6 text-gray-400 group-hover:text-white transition-colors" />
-                      </button>
-                    </motion.li>
-                  ))}
-                </ul>
-              </nav>
+                      {item.en}
+                      {activeSection === item.id && (
+                        <motion.span
+                          className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-pink-500 via-yellow-500 to-cyan-500"
+                          layoutId="activeSection"
+                          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                        />
+                      )}
+                    </a>
+                  </motion.li>
+                ))}
+              </ul>
+            </div>
+          </nav>
+        </div>
 
-              <div className="p-8 border-t border-white/10">
-                <p className="text-center text-gray-400 mb-6">FOLLOW US</p>
-                <div className="flex justify-center space-x-8">
-                  {[
-                    { icon: <Twitch className="w-6 h-6" />, color: "text-purple-400 hover:text-purple-300" },
-                    { icon: <Youtube className="w-6 h-6" />, color: "text-red-400 hover:text-red-300" },
-                    { icon: <Twitter className="w-6 h-6" />, color: "text-blue-400 hover:text-blue-300" },
-                    { icon: <Instagram className="w-6 h-6" />, color: "text-pink-400 hover:text-pink-300" },
-                  ].map((social, index) => (
-                    <motion.a
-                      key={index}
-                      href="#"
-                      className={`${social.color} transition-colors duration-300`}
-                      whileHover={{ scale: 1.2 }}
-                      whileTap={{ scale: 0.9 }}
-                    >
-                      {social.icon}
-                    </motion.a>
-                  ))}
-                </div>
-              </div>
-
-              <div className="p-6 bg-gradient-to-r from-pink-900/30 via-purple-900/30 to-blue-900/30 flex justify-center">
-                <Button
-                  className="bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 hover:from-pink-700 hover:via-purple-700 hover:to-blue-700 text-white font-bold py-6 px-8 text-lg"
-                  onClick={() => {
-                    setMobileMenuOpen(false)
-                    document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
-                  }}
-                >
-                  CONTACT US
-                </Button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </header>
+        {/* ネオンライン下部 */}
+        <motion.div
+          className="h-1 w-full bg-gradient-to-r from-cyan-500 via-yellow-500 to-pink-500"
+          animate={{
+            backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+            transition: { duration: 10, repeat: Number.POSITIVE_INFINITY, delay: 0.5 },
+          }}
+          style={{ backgroundSize: "200% 200%" }}
+        />
+      </motion.header>
 
       {/* ヒーローセクション */}
       <ParallaxSection
