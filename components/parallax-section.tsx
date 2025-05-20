@@ -16,7 +16,10 @@ export function ParallaxSection({ children, className = "", id, speed = 0.5 }: P
 
   return (
     <section id={id} className={`relative ${className}`}>
-      <motion.div style={{ y }} className="relative z-10">
+      <div className="absolute inset-0 -z-10" aria-hidden="true">
+        {/* この空のdivはIDのアンカーポイントとして機能し、ヘッダーの下に正しく配置されるようにします */}
+      </div>
+      <motion.div style={{ y }} className="relative z-10 pt-16 md:pt-20">
         {children}
       </motion.div>
     </section>

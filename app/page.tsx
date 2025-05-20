@@ -2,9 +2,21 @@
 
 import { useState, useEffect } from "react"
 import Image from "next/image"
-import { motion, useScroll, useTransform } from "framer-motion"
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 import { useMousePosition } from "@/hooks/use-mouse-position"
-import { Instagram, Youtube, Twitch, Twitter, Music, Calendar, User, MessageCircle, Sparkles } from "lucide-react"
+import {
+  Instagram,
+  Youtube,
+  Twitch,
+  Twitter,
+  Music,
+  Calendar,
+  User,
+  MessageCircle,
+  Sparkles,
+  Menu,
+  X,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { PsychedelicBackground } from "@/components/psychedelic-background"
@@ -16,6 +28,7 @@ export default function Home() {
   const mousePosition = useMousePosition()
   const [activeAvatar, setActiveAvatar] = useState(0)
   const [isHovering, setIsHovering] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { scrollYProgress } = useScroll()
   const rotation = useTransform(scrollYProgress, [0, 1], [0, 360])
   const scale = useTransform(scrollYProgress, [0, 0.5], [1, 1.5])
@@ -35,6 +48,22 @@ export default function Home() {
     return () => clearInterval(interval)
   }, [isHovering, avatars.length])
 
+  // メニュー項目の定義
+  const menuItems = [
+    { id: "home", ja: "ホーム", en: "HOME" },
+    { id: "profile", ja: "プロフィール", en: "PROFILE" },
+    { id: "streams", ja: "配信", en: "STREAMS" },
+    { id: "gallery", ja: "ギャラリー", en: "GALLERY" },
+    { id: "collection", ja: "コレクション", en: "COLLECTION" },
+    { id: "contact", ja: "コンタクト", en: "CONTACT" },
+  ]
+
+  // モバイルメニューを閉じてスクロールする関数
+  const handleMenuItemClick = (id: string) => {
+    setMobileMenuOpen(false)
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
+  }
+
   return (
     <main className="min-h-screen overflow-hidden bg-black text-white font-psychedelic relative">
       {/* サイケデリック背景 */}
@@ -53,16 +82,11 @@ export default function Home() {
         >
           KYOHEI
         </motion.h1>
-        <nav>
-          <ul className="flex space-x-4 md:space-x-6">
-            {[
-              { id: "home", ja: "ホーム", en: "HOME" },
-              { id: "profile", ja: "プロフィール", en: "PROFILE" },
-              { id: "streams", ja: "配信", en: "STREAMS" },
-              { id: "gallery", ja: "ギャラリー", en: "GALLERY" },
-              { id: "collection", ja: "コレクション", en: "COLLECTION" },
-              { id: "contact", ja: "コンタクト", en: "CONTACT" },
-            ].map((item, index) => (
+
+        {/* デスクトップナビゲーション */}
+        <nav className="hidden md:block">
+          <ul className="flex space-x-6">
+            {menuItems.map((item, index) => (
               <motion.li
                 key={index}
                 initial={{ opacity: 0, y: -20 }}
@@ -71,7 +95,7 @@ export default function Home() {
               >
                 <a
                   href={`#${item.id}`}
-                  className="relative text-sm md:text-base hover:text-pink-400 transition-colors duration-300 group font-bold"
+                  className="relative text-base hover:text-pink-400 transition-colors duration-300 group font-bold"
                 >
                   {item.en}
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-500 via-yellow-500 to-cyan-500 transition-all duration-300 group-hover:w-full"></span>
@@ -80,19 +104,99 @@ export default function Home() {
             ))}
           </ul>
         </nav>
+
+        {/* モバイルメニューボタン */}
+        <button
+          className="md:hidden text-white p-1 rounded-md hover:bg-white/10 transition-colors"
+          onClick={() => setMobileMenuOpen(true)}
+        >
+          <Menu className="w-6 h-6" />
+        </button>
+
+        {/* モバイルメニュー */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              className="fixed inset-0 bg-black/90 backdrop-blur-lg z-50 flex flex-col"
+              initial={{ opacity: 0, x: "100%" }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            >
+              <div className="flex justify-between items-center p-4 border-b border-white/10">
+                <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-yellow-500 to-cyan-500">
+                  KYOHEI MENU
+                </h2>
+                <button
+                  className="text-white p-1 rounded-md hover:bg-white/10 transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              <nav className="flex-1 overflow-y-auto py-8">
+                <ul className="space-y-4 px-6">
+                  {menuItems.map((item, index) => (
+                    <motion.li
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: index * 0.1 }}
+                      className="border-b border-white/10 pb-3"
+                    >
+                      <button
+                        onClick={() => handleMenuItemClick(item.id)}
+                        className="text-xl font-bold w-full text-left flex justify-between items-center group"
+                      >
+                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-yellow-500 to-cyan-500">
+                          {item.en}
+                        </span>
+                        <span className="text-sm text-gray-400 group-hover:text-white transition-colors">
+                          {item.ja}
+                        </span>
+                      </button>
+                    </motion.li>
+                  ))}
+                </ul>
+              </nav>
+              <div className="p-6 border-t border-white/10 flex justify-center space-x-6">
+                {[
+                  <Twitch key="twitch" className="w-5 h-5" />,
+                  <Youtube key="youtube" className="w-5 h-5" />,
+                  <Twitter key="twitter" className="w-5 h-5" />,
+                  <Instagram key="instagram" className="w-5 h-5" />,
+                ].map((icon, index) => (
+                  <motion.a
+                    key={index}
+                    href="#"
+                    className="text-gray-400 hover:text-white transition-colors duration-300"
+                    whileHover={{ scale: 1.2 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    {icon}
+                  </motion.a>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       {/* ヒーローセクション */}
-      <ParallaxSection id="home" className="h-screen flex flex-col items-center justify-center px-4" speed={0.2}>
+      <ParallaxSection
+        id="home"
+        className="h-screen flex flex-col items-center justify-center px-4 pt-16 md:pt-0"
+        speed={0.2}
+      >
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8 }}
-          className="relative z-10 w-full max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between"
+          className="relative z-10 w-full max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8"
         >
-          <div className="text-center md:text-left mb-8 md:mb-0">
+          <div className="text-center md:text-left">
             <motion.h2
-              className="text-5xl md:text-7xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-yellow-500 to-cyan-500 font-display"
+              className="text-4xl sm:text-5xl md:text-7xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-yellow-500 to-cyan-500 font-display"
               animate={{
                 textShadow: [
                   "0 0 5px #ff00ff, 0 0 10px #ff00ff",
@@ -106,7 +210,7 @@ export default function Home() {
               KYOHEI
             </motion.h2>
             <motion.p
-              className="text-xl md:text-2xl mb-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 font-bold"
+              className="text-lg sm:text-xl md:text-2xl mb-4 md:mb-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 font-bold"
               animate={{
                 scale: [1, 1.05, 1],
               }}
@@ -114,10 +218,10 @@ export default function Home() {
             >
               WELCOME TO THE PSYCHEDELIC WORLD
             </motion.p>
-            <p className="text-lg mb-8 max-w-lg text-gray-300">
+            <p className="text-base md:text-lg mb-6 md:mb-8 max-w-lg text-gray-300">
               ゲーム実況、トーク、音楽など多彩なコンテンツを配信中！ あなたの日常に刺激と興奮をお届けします。
             </p>
-            <div className="flex flex-wrap justify-center md:justify-start gap-4">
+            <div className="flex flex-wrap justify-center md:justify-start gap-3 md:gap-4">
               <Button
                 className="bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 hover:from-pink-700 hover:via-purple-700 hover:to-blue-700 text-white font-bold relative overflow-hidden group"
                 onClick={() => document.getElementById("streams")?.scrollIntoView({ behavior: "smooth" })}
@@ -136,7 +240,7 @@ export default function Home() {
           </div>
 
           <motion.div
-            className="relative w-64 h-64 md:w-80 md:h-80"
+            className="relative w-56 h-56 sm:w-64 sm:h-64 md:w-80 md:h-80 mt-4 md:mt-0"
             style={{ rotate: rotation }}
             whileHover={{ scale: 1.1 }}
           >
