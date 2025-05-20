@@ -466,22 +466,6 @@ export function GachaMachine() {
                     fill
                     className="object-cover"
                   />
-
-                  {/* キラキラエフェクト（レア以上の場合） */}
-                  {currentItem.rarity !== "common" && (
-                    <motion.div
-                      animate={{
-                        background: [
-                          "radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%)",
-                          "radial-gradient(circle, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0) 70%)",
-                          "radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%)",
-                        ],
-                        filter: ["hue-rotate(0deg)", "hue-rotate(180deg)", "hue-rotate(360deg)"],
-                      }}
-                      transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-                      className="absolute inset-0 pointer-events-none"
-                    />
-                  )}
                 </div>
 
                 <h3 className={cn("text-xl font-bold mb-2", RARITY_STYLES[currentItem.rarity].textColor)}>
