@@ -499,10 +499,6 @@ export default function Home() {
             <p className="text-gray-400 mb-6">
               ※配信スケジュールは変更になる場合があります。最新情報はSNSをチェックしてください。
             </p>
-            <Button className="bg-gradient-to-r from-purple-600 via-pink-600 to-yellow-600 hover:from-purple-700 hover:via-pink-700 hover:to-yellow-700 text-white font-bold relative overflow-hidden group">
-              <span className="relative z-10">SUBSCRIBE TO CHANNEL</span>
-              <span className="absolute inset-0 bg-gradient-to-r from-pink-500 via-yellow-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
-            </Button>
           </motion.div>
         </div>
       </ParallaxSection>
