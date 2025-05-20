@@ -16,6 +16,7 @@ import {
   Sparkles,
   Menu,
   X,
+  ChevronRight,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -38,6 +39,28 @@ export default function Home() {
     "/images/全身_みかん_ホスト風.svg",
     "/images/チャラ男.svg",
   ]
+
+  // テキストシャドウアニメーションの設定
+  const textShadowAnimation = {
+    textShadow: [
+      "0 0 5px #ff00ff, 0 0 10px #ff00ff",
+      "0 0 5px #00ffff, 0 0 10px #00ffff",
+      "0 0 5px #ffff00, 0 0 10px #ffff00",
+      "0 0 5px #ff00ff, 0 0 10px #ff00ff",
+    ],
+    transition: { duration: 4, repeat: Number.POSITIVE_INFINITY },
+  }
+
+  // ギャラリータイトル用の特別なアニメーション
+  const galleryTitleAnimation = {
+    textShadow: [
+      "0 0 10px #ff00ff, 0 0 20px #ff00ff",
+      "0 0 10px #00ffff, 0 0 20px #00ffff",
+      "0 0 10px #ffff00, 0 0 20px #ffff00",
+      "0 0 10px #ff00ff, 0 0 20px #ff00ff",
+    ],
+    transition: { duration: 4, repeat: Number.POSITIVE_INFINITY },
+  }
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -63,6 +86,18 @@ export default function Home() {
     setMobileMenuOpen(false)
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
   }
+
+  // モバイルメニューが開いている時は背景スクロールを無効にする
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = ""
+    }
+    return () => {
+      document.body.style.overflow = ""
+    }
+  }, [mobileMenuOpen])
 
   return (
     <main className="min-h-screen overflow-hidden bg-black text-white font-psychedelic relative">
@@ -107,75 +142,97 @@ export default function Home() {
 
         {/* モバイルメニューボタン */}
         <button
-          className="md:hidden text-white p-1 rounded-md hover:bg-white/10 transition-colors"
+          className="md:hidden text-white p-2 rounded-md hover:bg-white/10 transition-colors"
           onClick={() => setMobileMenuOpen(true)}
+          aria-label="メニューを開く"
         >
-          <Menu className="w-6 h-6" />
+          <Menu className="w-7 h-7" />
         </button>
 
         {/* モバイルメニュー */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
-              className="fixed inset-0 bg-black/90 backdrop-blur-lg z-50 flex flex-col"
+              className="fixed inset-0 bg-black/95 backdrop-blur-lg z-50 flex flex-col"
               initial={{ opacity: 0, x: "100%" }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
             >
-              <div className="flex justify-between items-center p-4 border-b border-white/10">
-                <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-yellow-500 to-cyan-500">
+              <div className="flex justify-between items-center p-5 border-b border-white/10">
+                <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-yellow-500 to-cyan-500">
                   KYOHEI MENU
                 </h2>
                 <button
-                  className="text-white p-1 rounded-md hover:bg-white/10 transition-colors"
+                  className="text-white p-2 rounded-md hover:bg-white/10 transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
+                  aria-label="メニューを閉じる"
                 >
-                  <X className="w-6 h-6" />
+                  <X className="w-7 h-7" />
                 </button>
               </div>
+
               <nav className="flex-1 overflow-y-auto py-8">
-                <ul className="space-y-4 px-6">
+                <ul className="space-y-6 px-6">
                   {menuItems.map((item, index) => (
                     <motion.li
                       key={index}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.3, delay: index * 0.1 }}
-                      className="border-b border-white/10 pb-3"
+                      className="border-b border-white/10 pb-5"
                     >
                       <button
                         onClick={() => handleMenuItemClick(item.id)}
-                        className="text-xl font-bold w-full text-left flex justify-between items-center group"
+                        className="text-2xl font-bold w-full text-left flex justify-between items-center group py-3"
                       >
-                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-yellow-500 to-cyan-500">
-                          {item.en}
-                        </span>
-                        <span className="text-sm text-gray-400 group-hover:text-white transition-colors">
-                          {item.ja}
-                        </span>
+                        <div className="flex items-center">
+                          <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-yellow-500 to-cyan-500">
+                            {item.en}
+                          </span>
+                          <span className="ml-3 text-base text-gray-400 group-hover:text-white transition-colors">
+                            {item.ja}
+                          </span>
+                        </div>
+                        <ChevronRight className="w-6 h-6 text-gray-400 group-hover:text-white transition-colors" />
                       </button>
                     </motion.li>
                   ))}
                 </ul>
               </nav>
-              <div className="p-6 border-t border-white/10 flex justify-center space-x-6">
-                {[
-                  <Twitch key="twitch" className="w-5 h-5" />,
-                  <Youtube key="youtube" className="w-5 h-5" />,
-                  <Twitter key="twitter" className="w-5 h-5" />,
-                  <Instagram key="instagram" className="w-5 h-5" />,
-                ].map((icon, index) => (
-                  <motion.a
-                    key={index}
-                    href="#"
-                    className="text-gray-400 hover:text-white transition-colors duration-300"
-                    whileHover={{ scale: 1.2 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    {icon}
-                  </motion.a>
-                ))}
+
+              <div className="p-8 border-t border-white/10">
+                <p className="text-center text-gray-400 mb-6">FOLLOW US</p>
+                <div className="flex justify-center space-x-8">
+                  {[
+                    { icon: <Twitch className="w-6 h-6" />, color: "text-purple-400 hover:text-purple-300" },
+                    { icon: <Youtube className="w-6 h-6" />, color: "text-red-400 hover:text-red-300" },
+                    { icon: <Twitter className="w-6 h-6" />, color: "text-blue-400 hover:text-blue-300" },
+                    { icon: <Instagram className="w-6 h-6" />, color: "text-pink-400 hover:text-pink-300" },
+                  ].map((social, index) => (
+                    <motion.a
+                      key={index}
+                      href="#"
+                      className={`${social.color} transition-colors duration-300`}
+                      whileHover={{ scale: 1.2 }}
+                      whileTap={{ scale: 0.9 }}
+                    >
+                      {social.icon}
+                    </motion.a>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-6 bg-gradient-to-r from-pink-900/30 via-purple-900/30 to-blue-900/30 flex justify-center">
+                <Button
+                  className="bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 hover:from-pink-700 hover:via-purple-700 hover:to-blue-700 text-white font-bold py-6 px-8 text-lg"
+                  onClick={() => {
+                    setMobileMenuOpen(false)
+                    document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
+                  }}
+                >
+                  CONTACT US
+                </Button>
               </div>
             </motion.div>
           )}
@@ -197,15 +254,7 @@ export default function Home() {
           <div className="text-center md:text-left">
             <motion.h2
               className="text-4xl sm:text-5xl md:text-7xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-yellow-500 to-cyan-500 font-display"
-              animate={{
-                textShadow: [
-                  "0 0 5px #ff00ff, 0 0 10px #ff00ff",
-                  "0 0 5px #00ffff, 0 0 10px #00ffff",
-                  "0 0 5px #ffff00, 0 0 10px #ffff00",
-                  "0 0 5px #ff00ff, 0 0 10px #ff00ff",
-                ],
-              }}
-              transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY }}
+              animate={textShadowAnimation}
             >
               KYOHEI
             </motion.h2>
@@ -213,8 +262,8 @@ export default function Home() {
               className="text-lg sm:text-xl md:text-2xl mb-4 md:mb-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 font-bold"
               animate={{
                 scale: [1, 1.05, 1],
+                transition: { duration: 3, repeat: Number.POSITIVE_INFINITY },
               }}
-              transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
             >
               WELCOME TO THE PSYCHEDELIC WORLD
             </motion.p>
@@ -249,8 +298,8 @@ export default function Home() {
               animate={{
                 scale: [1, 1.2, 1],
                 rotate: [0, 180, 360],
+                transition: { duration: 10, repeat: Number.POSITIVE_INFINITY },
               }}
-              transition={{ duration: 10, repeat: Number.POSITIVE_INFINITY }}
             />
             {avatars.map((avatar, index) => (
               <motion.div
@@ -290,8 +339,8 @@ export default function Home() {
             animate={{
               y: [0, 10, 0],
               filter: ["drop-shadow(0 0 5px #ff00ff)", "drop-shadow(0 0 5px #00ffff)", "drop-shadow(0 0 5px #ff00ff)"],
+              transition: { duration: 2, repeat: Number.POSITIVE_INFINITY },
             }}
-            transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
           >
             <svg
               width="24"
@@ -322,15 +371,7 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            animate={{
-              textShadow: [
-                "0 0 5px #ff00ff, 0 0 10px #ff00ff",
-                "0 0 5px #00ffff, 0 0 10px #00ffff",
-                "0 0 5px #ffff00, 0 0 10px #ffff00",
-                "0 0 5px #ff00ff, 0 0 10px #ff00ff",
-              ],
-            }}
-            transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY }}
+            animate={textShadowAnimation}
           >
             PROFILE
           </motion.h2>
@@ -348,8 +389,8 @@ export default function Home() {
                 animate={{
                   scale: [1, 1.2, 1],
                   rotate: [0, 180, 360],
+                  transition: { duration: 10, repeat: Number.POSITIVE_INFINITY },
                 }}
-                transition={{ duration: 10, repeat: Number.POSITIVE_INFINITY }}
               />
               <Image
                 src="/images/全身_みかん_ホスト風.svg"
@@ -422,15 +463,7 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            animate={{
-              textShadow: [
-                "0 0 5px #ff00ff, 0 0 10px #ff00ff",
-                "0 0 5px #00ffff, 0 0 10px #00ffff",
-                "0 0 5px #ffff00, 0 0 10px #ffff00",
-                "0 0 5px #ff00ff, 0 0 10px #ff00ff",
-              ],
-            }}
-            transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY }}
+            animate={textShadowAnimation}
           >
             STREAMS
           </motion.h2>
@@ -496,8 +529,8 @@ export default function Home() {
                   className="absolute inset-0 bg-gradient-to-br from-transparent to-black/30"
                   animate={{
                     opacity: [0.3, 0.5, 0.3],
+                    transition: { duration: 3, repeat: Number.POSITIVE_INFINITY },
                   }}
-                  transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
                 />
                 <div className="relative z-10">
                   <div className="flex items-center mb-4">
@@ -512,8 +545,8 @@ export default function Home() {
                   animate={{
                     scale: [1, 1.5, 1],
                     opacity: [0.1, 0.3, 0.1],
+                    transition: { duration: 3, repeat: Number.POSITIVE_INFINITY },
                   }}
-                  transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
                 />
               </motion.div>
             ))}
@@ -546,15 +579,7 @@ export default function Home() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          animate={{
-            textShadow: [
-              "0 0 10px #ff00ff, 0 0 20px #ff00ff",
-              "0 0 10px #00ffff, 0 0 20px #00ffff",
-              "0 0 10px #ffff00, 0 0 20px #ffff00",
-              "0 0 10px #ff00ff, 0 0 20px #ff00ff",
-            ],
-          }}
-          transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY }}
+          animate={galleryTitleAnimation}
         >
           GALLERY
         </motion.h2>
@@ -575,8 +600,8 @@ export default function Home() {
                   "radial-gradient(circle at 30% 70%, rgba(255, 255, 0, 0.6), transparent 70%)",
                   "radial-gradient(circle at 70% 30%, rgba(255, 0, 255, 0.6), transparent 70%)",
                 ],
+                transition: { duration: 15, repeat: Number.POSITIVE_INFINITY },
               }}
-              transition={{ duration: 15, repeat: Number.POSITIVE_INFINITY }}
             />
           </div>
 
@@ -601,11 +626,11 @@ export default function Home() {
               opacity: [0.2, 0.6, 0.2],
               height: ["0%", "100%", "0%"],
               top: ["0%", "0%", "100%"],
-            }}
-            transition={{
-              duration: 8 + i * 2,
-              repeat: Number.POSITIVE_INFINITY,
-              delay: i * 0.5,
+              transition: {
+                duration: 8 + i * 2,
+                repeat: Number.POSITIVE_INFINITY,
+                delay: i * 0.5,
+              },
             }}
           />
         ))}
@@ -637,8 +662,8 @@ export default function Home() {
                     "linear-gradient(135deg, rgba(0, 255, 255, 0.3), rgba(255, 255, 0, 0.3))",
                     "linear-gradient(135deg, rgba(255, 255, 0, 0.3), rgba(255, 0, 255, 0.3))",
                   ],
+                  transition: { duration: 10, repeat: Number.POSITIVE_INFINITY },
                 }}
-                transition={{ duration: 10, repeat: Number.POSITIVE_INFINITY }}
               />
               <Image src="/images/うざ眼鏡.svg" alt="キャラクター1" fill className="object-contain p-8" />
             </div>
@@ -672,8 +697,8 @@ export default function Home() {
                     "linear-gradient(135deg, rgba(255, 255, 0, 0.3), rgba(255, 0, 255, 0.3))",
                     "linear-gradient(135deg, rgba(255, 0, 255, 0.3), rgba(0, 255, 255, 0.3))",
                   ],
+                  transition: { duration: 10, repeat: Number.POSITIVE_INFINITY, delay: 2 },
                 }}
-                transition={{ duration: 10, repeat: Number.POSITIVE_INFINITY, delay: 2 }}
               />
               <Image src="/images/パーカー.svg" alt="キャラクター2" fill className="object-contain p-8" />
             </div>
@@ -708,8 +733,8 @@ export default function Home() {
                     "radial-gradient(circle, rgba(0, 255, 255, 0.4), transparent 70%)",
                   ],
                   scale: [1, 1.1, 1],
+                  transition: { duration: 10, repeat: Number.POSITIVE_INFINITY, delay: 4 },
                 }}
-                transition={{ duration: 10, repeat: Number.POSITIVE_INFINITY, delay: 4 }}
               />
               <Image src="/images/全身_みかん_ホスト風.svg" alt="キャラクター3" fill className="object-contain p-8" />
               <motion.div
@@ -718,8 +743,8 @@ export default function Home() {
                 animate={{
                   borderColor: ["rgba(255, 255, 0, 0.3)", "rgba(255, 0, 255, 0.3)", "rgba(0, 255, 255, 0.3)"],
                   rotate: [0, 360],
+                  transition: { duration: 20, repeat: Number.POSITIVE_INFINITY, ease: "linear" },
                 }}
-                transition={{ duration: 20, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
               />
             </div>
           </motion.div>
@@ -752,8 +777,8 @@ export default function Home() {
                     "linear-gradient(135deg, rgba(255, 255, 0, 0.3), rgba(0, 255, 255, 0.3))",
                     "linear-gradient(135deg, rgba(0, 255, 255, 0.3), rgba(255, 0, 255, 0.3))",
                   ],
+                  transition: { duration: 10, repeat: Number.POSITIVE_INFINITY, delay: 6 },
                 }}
-                transition={{ duration: 10, repeat: Number.POSITIVE_INFINITY, delay: 6 }}
               />
               <Image src="/images/チャラ男.svg" alt="キャラクター4" fill className="object-contain p-8" />
             </div>
@@ -773,15 +798,7 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            animate={{
-              textShadow: [
-                "0 0 5px #ff00ff, 0 0 10px #ff00ff",
-                "0 0 5px #00ffff, 0 0 10px #00ffff",
-                "0 0 5px #ffff00, 0 0 10px #ffff00",
-                "0 0 5px #ff00ff, 0 0 10px #ff00ff",
-              ],
-            }}
-            transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY }}
+            animate={textShadowAnimation}
           >
             CONTACT
           </motion.h2>
@@ -829,8 +846,8 @@ export default function Home() {
                           "linear-gradient(to right, rgba(59, 130, 246, 0.1), rgba(236, 72, 153, 0.1), rgba(168, 85, 247, 0.1))",
                           "linear-gradient(to right, rgba(168, 85, 247, 0.1), rgba(59, 130, 246, 0.1), rgba(236, 72, 153, 0.1))",
                         ],
+                        transition: { duration: 5, repeat: Number.POSITIVE_INFINITY },
                       }}
-                      transition={{ duration: 5, repeat: Number.POSITIVE_INFINITY }}
                     />
                   </motion.div>
                 </div>
@@ -899,8 +916,8 @@ export default function Home() {
                         className="absolute inset-0 bg-white/10"
                         animate={{
                           opacity: [0, 0.2, 0],
+                          transition: { duration: 2, repeat: Number.POSITIVE_INFINITY },
                         }}
-                        transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
                       />
                       {social.icon}
                       <span>{social.name}</span>
@@ -927,8 +944,8 @@ export default function Home() {
                       className="absolute -top-1 -right-1"
                       animate={{
                         rotate: [0, 10, 0, -10, 0],
+                        transition: { duration: 2, repeat: Number.POSITIVE_INFINITY },
                       }}
-                      transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
                     >
                       <Sparkles className="w-4 h-4 text-yellow-300" />
                     </motion.span>
@@ -978,8 +995,8 @@ export default function Home() {
                     "drop-shadow(0 0 3px #00ffff)",
                     "drop-shadow(0 0 3px #ffff00)",
                   ],
+                  transition: { duration: 1, repeat: Number.POSITIVE_INFINITY },
                 }}
-                transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY }}
                 whileTap={{ scale: 0.9 }}
               >
                 {icon}
