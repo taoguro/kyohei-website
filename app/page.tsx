@@ -202,7 +202,7 @@ export default function Home() {
                 transition: { duration: 3, repeat: Number.POSITIVE_INFINITY },
               }}
             >
-              WELCOME TO THE KYOHEY HOUSE
+              WELCOME TO THE SUGIYAMA HOUSE
             </motion.p>
             <p className="text-base md:text-lg mb-6 md:mb-8 max-w-lg text-gray-300">
               ゲーム実況、トーク、音楽など多彩なコンテンツを配信中！ あなたの日常に刺激と興奮をお届けします。
