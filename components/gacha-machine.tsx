@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react"
 import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
-import { Gift, Star, X, Trophy, Sparkles } from "lucide-react"
+import { Gift, Star, X, Trophy, Sparkles, PartyPopper } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -26,50 +26,50 @@ const GACHA_ITEMS: GachaItem[] = [
   {
     id: 1,
     name: "きょうへいステッカー",
-    description: "定番のきょうへいステッカー。配信でよく使われるリアクション顔です。",
-    image: "/images/anime-streamer-sticker.png",
+    description: "謎のきょうへいステッカー。夜を照らすムードメーカー。",
+    image: "/images/ガチャガチャ/ステッカー.svg",
     rarity: "common",
   },
   {
     id: 2,
-    name: "へいへいズバッジ",
-    description: "ファンクラブ公式バッジ。胸に付ければあなたもへいへいズの一員！",
-    image: "/images/placeholder-1uni9.png",
+    name: "きょうへいのイラスト",
+    description: "きょうへい本人はこのイラストのままです",
+    image: "/images/ガチャガチャ/イラスト.svg",
     rarity: "common",
   },
   {
     id: 3,
-    name: "きょうへいぬいぐるみ",
-    description: "小さくてかわいいきょうへいのぬいぐるみ。デスクに置いて癒されよう。",
-    image: "/images/cute-anime-plushie.png",
+    name: "眠たいオレンジ",
+    description: "このマークの意味わかるかな？",
+    image: "/images/ガチャガチャ/オレンジ.svg",
     rarity: "rare",
   },
   {
     id: 4,
-    name: "サイン入りチェキ",
-    description: "きょうへい直筆サイン入りのチェキ写真。貴重なコレクションアイテム！",
-    image: "/images/placeholder-ayh2v.png",
+    name: "フリップきょうへい",
+    description: "吉本興業所属",
+    image: "/images/ガチャガチャ/お笑い.svg",
     rarity: "rare",
   },
   {
     id: 5,
-    name: "限定コスプレフォト",
-    description: "あの伝説の配信で着用した衣装のきょうへい。ファン垂涎のレアショット！",
-    image: "/images/anime-cosplay.png",
+    name: "ベロチュー",
+    description: "正直勃起した",
+    image: "/images/ガチャガチャ/ベロチュー.svg",
     rarity: "super-rare",
   },
   {
     id: 6,
-    name: "ゴールデンマイク",
-    description: "初の歌配信で使用したマイクのレプリカ。金色に輝く逸品。",
-    image: "/images/golden-microphone.png",
+    name: "女装きょうへい",
+    description: "漢なら抱くな抱かれろ",
+    image: "/images/ガチャガチャ/女装.svg",
     rarity: "super-rare",
   },
   {
     id: 7,
-    name: "伝説の配信瞬間",
-    description: "視聴者数10万人を突破した伝説の配信の決定的瞬間。歴史的価値あり！",
-    image: "/images/streamer-celebration.png",
+    name: "I am GOD'S CHILD",
+    description: "この腐敗した世界に堕とされた はぁーあ",
+    image: "/images/ガチャガチャ/少年時代.svg",
     rarity: "ultra-rare",
   },
 ]
@@ -116,6 +116,8 @@ export function GachaMachine() {
   const [currentItem, setCurrentItem] = useState<GachaItem | null>(null)
   const [collection, setCollection] = useState<GachaItem[]>([])
   const [showCollection, setShowCollection] = useState(false)
+  const [showCompleteModal, setShowCompleteModal] = useState(false)
+  const [hasShownCompleteModal, setHasShownCompleteModal] = useState(false)
 
   // コレクションアイテムをグループ化して数量を追加
   const groupedCollection = useMemo(() => {
@@ -140,6 +142,17 @@ export function GachaMachine() {
   // 全アイテム種類数
   const totalItemTypes = GACHA_ITEMS.length
 
+  // コレクション完了状態を確認
+  const isCollectionComplete = useMemo(() => {
+    // 全てのアイテムIDを取得
+    const collectedItemIds = new Set(groupedCollection.map((item) => item.id))
+    // 全てのアイテムIDを取得
+    const allItemIds = new Set(GACHA_ITEMS.map((item) => item.id))
+
+    // 全てのアイテムが収集されているかチェック
+    return collectedItemIds.size === allItemIds.size
+  }, [groupedCollection])
+
   // コレクションをローカルストレージから読み込む
   useEffect(() => {
     const savedCollection = localStorage.getItem("kyohei-gacha-collection")
@@ -150,6 +163,10 @@ export function GachaMachine() {
         console.error("コレクションの読み込みに失敗しました", e)
       }
     }
+
+    // コンプリートモーダル表示履歴を読み込む
+    const hasShown = localStorage.getItem("kyohei-gacha-complete-shown") === "true"
+    setHasShownCompleteModal(hasShown)
   }, [])
 
   // コレクションをローカルストレージに保存
@@ -158,6 +175,22 @@ export function GachaMachine() {
       localStorage.setItem("kyohei-gacha-collection", JSON.stringify(collection))
     }
   }, [collection])
+
+  // コレクション完了時の処理
+  useEffect(() => {
+    // コレクションが完了していて、まだモーダルを表示していない場合
+    if (isCollectionComplete && !hasShownCompleteModal && collection.length > 0) {
+      // 少し遅延させてモーダルを表示（ガチャ結果表示後に表示されるようにするため）
+      const timer = setTimeout(() => {
+        setShowCompleteModal(true)
+        // 表示履歴を保存
+        localStorage.setItem("kyohei-gacha-complete-shown", "true")
+        setHasShownCompleteModal(true)
+      }, 1000)
+
+      return () => clearTimeout(timer)
+    }
+  }, [isCollectionComplete, hasShownCompleteModal, collection.length])
 
   // ガチャを回す処理
   const spinGacha = () => {
@@ -216,6 +249,18 @@ export function GachaMachine() {
     setCurrentItem(item)
     setShowResult(true)
     setShowCollection(false)
+  }
+
+  // コンプリートモーダルを閉じる
+  const closeCompleteModal = () => {
+    setShowCompleteModal(false)
+  }
+
+  // コンプリート状態をリセット（デバッグ用）
+  const resetComplete = () => {
+    localStorage.removeItem("kyohei-gacha-complete-shown")
+    setHasShownCompleteModal(false)
+    setShowCompleteModal(false)
   }
 
   return (
@@ -282,6 +327,19 @@ export function GachaMachine() {
             <div className="w-full h-1/2 bg-pink-300/80 rounded-t-full"></div>
           </motion.div>
         </div>
+
+        {/* コレクション完了バッジ */}
+        {isCollectionComplete && (
+          <motion.div
+            initial={{ scale: 0, rotate: -10 }}
+            animate={{ scale: 1, rotate: 0 }}
+            className="absolute top-4 right-4 bg-gradient-to-r from-yellow-500 to-amber-500 text-black font-bold text-xs px-3 py-1 rounded-full shadow-lg flex items-center gap-1 z-10"
+            style={{ boxShadow: "0 0 10px rgba(255,215,0,0.7)" }}
+          >
+            <Trophy className="h-3 w-3" />
+            <span>コンプリート!</span>
+          </motion.div>
+        )}
 
         {/* コントロール部分 */}
         <div
@@ -499,6 +557,25 @@ export function GachaMachine() {
                 </button>
               </div>
 
+              {/* コレクション完了バッジ */}
+              {isCollectionComplete && (
+                <motion.div
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-500 p-3 rounded-lg mb-6 text-center"
+                  style={{ boxShadow: "0 0 15px rgba(255,215,0,0.5)" }}
+                >
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <Trophy className="h-5 w-5 text-black" />
+                    <h3 className="text-lg font-bold text-black">コレクション コンプリート！</h3>
+                    <Trophy className="h-5 w-5 text-black" />
+                  </div>
+                  <p className="text-sm text-black/80">
+                    おめでとうございます！すべてのアイテムを集めました！あなたは真のきょうへいファンです！
+                  </p>
+                </motion.div>
+              )}
+
               {collection.length === 0 ? (
                 <div className="text-center py-10 text-gray-400">
                   <Gift className="h-12 w-12 mx-auto mb-4 opacity-30" />
@@ -564,6 +641,153 @@ export function GachaMachine() {
                   ))}
                 </div>
               )}
+
+              {/* デバッグ用ボタン（開発時のみ表示） */}
+              {/* <div className="mt-6 text-center">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={resetComplete}
+                  className="text-gray-400 border-gray-700 text-xs"
+                >
+                  コンプリート状態をリセット（開発用）
+                </Button>
+              </div> */}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* コンプリート祝福モーダル */}
+      <AnimatePresence>
+        {showCompleteModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-50 p-4"
+            onClick={closeCompleteModal}
+          >
+            <motion.div
+              initial={{ scale: 0.5 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.5 }}
+              transition={{ type: "spring", bounce: 0.5 }}
+              className="bg-gradient-to-br from-yellow-900/80 to-amber-900/80 backdrop-blur-md rounded-xl p-8 max-w-md w-full shadow-2xl relative overflow-hidden"
+              style={{ boxShadow: "0 0 50px rgba(255,215,0,0.7)" }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* 背景エフェクト */}
+              <motion.div
+                className="absolute inset-0 opacity-30"
+                animate={{
+                  background: [
+                    "radial-gradient(circle at 30% 30%, rgba(255, 215, 0, 0.8), transparent 70%)",
+                    "radial-gradient(circle at 70% 70%, rgba(255, 215, 0, 0.8), transparent 70%)",
+                    "radial-gradient(circle at 30% 70%, rgba(255, 215, 0, 0.8), transparent 70%)",
+                    "radial-gradient(circle at 70% 30%, rgba(255, 215, 0, 0.8), transparent 70%)",
+                  ],
+                }}
+                transition={{ duration: 10, repeat: Number.POSITIVE_INFINITY }}
+              />
+
+              {/* 紙吹雪アニメーション */}
+              {[...Array(30)].map((_, i) => (
+                <motion.div
+                  key={`confetti-${i}`}
+                  className="absolute w-2 h-2 rounded-full"
+                  initial={{
+                    top: "-5%",
+                    left: `${Math.random() * 100}%`,
+                    backgroundColor:
+                      i % 5 === 0
+                        ? "#ff00ff"
+                        : i % 5 === 1
+                          ? "#00ffff"
+                          : i % 5 === 2
+                            ? "#ffff00"
+                            : i % 5 === 3
+                              ? "#ff0000"
+                              : "#00ff00",
+                    scale: Math.random() * 0.5 + 0.5,
+                  }}
+                  animate={{
+                    top: "105%",
+                    rotate: [0, 360],
+                    x: [0, Math.random() * 100 - 50],
+                  }}
+                  transition={{
+                    duration: Math.random() * 3 + 2,
+                    repeat: Number.POSITIVE_INFINITY,
+                    delay: Math.random() * 2,
+                    ease: "linear",
+                  }}
+                />
+              ))}
+
+              <div className="relative z-10">
+                <div className="flex justify-center mb-6">
+                  <motion.div
+                    animate={{
+                      rotate: [0, 10, -10, 0],
+                      scale: [1, 1.1, 1],
+                    }}
+                    transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+                    className="bg-gradient-to-r from-yellow-400 to-amber-500 p-3 rounded-full"
+                  >
+                    <PartyPopper className="h-10 w-10 text-black" />
+                  </motion.div>
+                </div>
+
+                <motion.h2
+                  className="text-3xl font-bold text-center text-yellow-300 mb-4 font-display"
+                  animate={{
+                    textShadow: [
+                      "0 0 10px rgba(255, 215, 0, 0.8)",
+                      "0 0 20px rgba(255, 215, 0, 0.8)",
+                      "0 0 10px rgba(255, 215, 0, 0.8)",
+                    ],
+                  }}
+                  transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+                >
+                  コンプリート達成！
+                </motion.h2>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="text-center mb-6"
+                >
+                  <p className="text-yellow-100 mb-4">
+                    おめでとうございます！すべてのきょうへいコレクションアイテムを集めました！
+                  </p>
+                  <p className="text-yellow-200 font-bold">ひまかよｗｗｗ</p>
+                </motion.div>
+
+                <div className="flex justify-center gap-4 mt-8">
+                  <motion.div className="relative" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button
+                      onClick={closeCompleteModal}
+                      className="bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-black font-bold px-6 py-2"
+                      style={{ boxShadow: "0 0 15px rgba(255,215,0,0.5)" }}
+                    >
+                      ありがとう！
+                    </Button>
+                    <motion.div
+                      className="absolute -inset-1 rounded-lg opacity-50 z-0"
+                      animate={{
+                        background: [
+                          "linear-gradient(45deg, rgba(255,215,0,0.6), rgba(255,165,0,0.6))",
+                          "linear-gradient(45deg, rgba(255,165,0,0.6), rgba(255,215,0,0.6))",
+                        ],
+                      }}
+                      transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+                      style={{ filter: "blur(8px)" }}
+                    />
+                  </motion.div>
+                </div>
+              </div>
             </motion.div>
           </motion.div>
         )}
