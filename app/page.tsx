@@ -354,7 +354,7 @@ export default function Home() {
                   </div>
                   <ul className="space-y-2 text-gray-300">
                     <li>
-                      <span className="font-bold text-white">名前:</span> きょうへい
+                      <span className="font-bold text-white">名前:</span> KyoHey
                     </li>
                     <li>
                       <span className="font-bold text-white">活動開始:</span> 2019年10月1日
@@ -983,7 +983,7 @@ export default function Home() {
               >
                 <h3 className="text-xl font-bold text-green-400 mb-4 font-display">SUPPORT</h3>
                 <p className="text-gray-300 mb-4">
-                  きょうへいの活動を応援してくれる方は、以下のリンクからサポートすることができます。
+                  KyoHeyの活動を応援してくれる方は、以下のリンクからサポートすることができます。
                 </p>
                 <div className="space-y-3">
                   <Button className="w-full bg-gradient-to-r from-green-600 to-yellow-600 hover:from-green-700 hover:to-yellow-700 text-white font-bold relative overflow-hidden group">
