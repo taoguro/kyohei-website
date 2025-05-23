@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import { motion, useScroll, useTransform } from "framer-motion"
 import { useMousePosition } from "@/hooks/use-mouse-position"
-import { Instagram, Youtube, Twitch, Twitter, Music, Calendar, User, MessageCircle, Sparkles } from "lucide-react"
+import { Instagram, Youtube, Twitch, Twitter, Music, User, MessageCircle, Sparkles, Clock, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { PsychedelicBackground } from "@/components/psychedelic-background"
@@ -27,7 +27,6 @@ export default function Home() {
     "/images/全身_みかん_ホスト風.svg",
     "/images/チャラ男.svg",
   ]
-
   // テキストシャドウアニメーションの設定
   const textShadowAnimation = {
     textShadow: [
@@ -125,7 +124,7 @@ export default function Home() {
               className="text-xl sm:text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-yellow-500 to-cyan-500"
               animate={textShadowAnimation}
             >
-              KYOHEI
+              KyoHey
             </motion.h1>
           </motion.div>
 
@@ -193,7 +192,7 @@ export default function Home() {
               className="text-4xl sm:text-5xl md:text-7xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-yellow-500 to-cyan-500 font-display"
               animate={textShadowAnimation}
             >
-              KYOHEI
+              KyoHey
             </motion.h2>
             <motion.p
               className="text-lg sm:text-xl md:text-2xl mb-4 md:mb-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 font-bold"
@@ -358,13 +357,13 @@ export default function Home() {
                       <span className="font-bold text-white">名前:</span> きょうへい
                     </li>
                     <li>
-                      <span className="font-bold text-white">活動開始:</span> 2020年
+                      <span className="font-bold text-white">活動開始:</span> 2019年10月1日
                     </li>
                     <li>
-                      <span className="font-bold text-white">ジャンル:</span> ゲーム実況、トーク、音楽
+                      <span className="font-bold text-white">ジャンル:</span> ライブ配信（雑談、歌、ゲーム）
                     </li>
                     <li>
-                      <span className="font-bold text-white">特徴:</span> サイケデリックな世界観と独特のキャラクター
+                      <span className="font-bold text-white">特徴:</span> ハッピーな世界観と独特のキャラクター
                     </li>
                   </ul>
                 </motion.div>
@@ -380,7 +379,7 @@ export default function Home() {
                   </div>
                   <ul className="space-y-2 text-gray-300">
                     <li>音楽制作</li>
-                    <li>ゲーム（特にアクションとRPG）</li>
+                    <li>ゲーム</li>
                     <li>視聴者との交流</li>
                     <li>新しい配信スタイルの実験</li>
                   </ul>
@@ -391,7 +390,7 @@ export default function Home() {
         </div>
       </ParallaxSection>
 
-      {/* 配信スケジュールセクション */}
+      {/* 配信スケジュールセクション - 更新版 */}
       <ParallaxSection id="streams" className="min-h-screen py-20 px-4" speed={0.6}>
         <div className="max-w-5xl mx-auto">
           <motion.h2
@@ -405,88 +404,207 @@ export default function Home() {
             STREAMS
           </motion.h2>
 
+          {/* 新しい配信時間表示 */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="relative"
           >
-            {[
-              {
-                day: "MONDAY",
-                time: "20:00〜22:00",
-                content: "ゲーム実況",
-                color: "from-pink-600 via-purple-600 to-blue-600",
-              },
-              {
-                day: "WEDNESDAY",
-                time: "21:00〜23:00",
-                content: "雑談・トーク",
-                color: "from-purple-600 via-blue-600 to-cyan-600",
-              },
-              {
-                day: "FRIDAY",
-                time: "22:00〜24:00",
-                content: "音楽セッション",
-                color: "from-blue-600 via-cyan-600 to-green-600",
-              },
-              {
-                day: "SATURDAY",
-                time: "19:00〜22:00",
-                content: "視聴者参加型",
-                color: "from-green-600 via-yellow-600 to-orange-600",
-              },
-              {
-                day: "SUNDAY",
-                time: "15:00〜18:00",
-                content: "スペシャル企画",
-                color: "from-orange-600 via-red-600 to-pink-600",
-              },
-              {
-                day: "SPECIAL",
-                time: "告知あり",
-                content: "コラボ配信",
-                color: "from-pink-600 via-yellow-600 to-cyan-600",
-              },
-            ].map((schedule, index) => (
+            {/* 背景エフェクト */}
+            <motion.div
+              className="absolute inset-0 rounded-3xl opacity-30 z-0"
+              style={{
+                background: "linear-gradient(135deg, rgba(255, 0, 255, 0.3), rgba(0, 255, 255, 0.3))",
+                filter: "blur(20px)",
+              }}
+              animate={{
+                background: [
+                  "linear-gradient(135deg, rgba(255, 0, 255, 0.3), rgba(0, 255, 255, 0.3))",
+                  "linear-gradient(135deg, rgba(0, 255, 255, 0.3), rgba(255, 255, 0, 0.3))",
+                  "linear-gradient(135deg, rgba(255, 255, 0, 0.3), rgba(255, 0, 255, 0.3))",
+                ],
+                transition: { duration: 10, repeat: Number.POSITIVE_INFINITY },
+              }}
+            />
+
+            <div className="bg-black/50 backdrop-blur-md rounded-3xl border border-purple-500/30 p-8 md:p-12 relative z-10">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-10">
+                <div className="text-center md:text-left">
+                  <div className="flex items-center justify-center md:justify-start gap-3 mb-4">
+                    <motion.div
+                      animate={{
+                        scale: [1, 1.2, 1],
+                        rotate: [0, 5, -5, 0],
+                      }}
+                      transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
+                    >
+                      <Clock className="h-8 w-8 text-pink-400" />
+                    </motion.div>
+                    <h3 className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400">
+                      毎日配信
+                    </h3>
+                  </div>
+                  <p className="text-lg text-gray-300 max-w-md">
+                    きょうへいの配信は毎日行われています。ゲーム実況、雑談、音楽など様々なコンテンツをお楽しみください。
+                  </p>
+                </div>
+
+                <motion.div
+                  className="bg-gradient-to-r from-purple-900/50 to-pink-900/50 p-5 rounded-full flex items-center justify-center relative"
+                  animate={{
+                    boxShadow: [
+                      "0 0 20px rgba(255, 0, 255, 0.5)",
+                      "0 0 30px rgba(255, 0, 255, 0.7)",
+                      "0 0 20px rgba(255, 0, 255, 0.5)",
+                    ],
+                  }}
+                  transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+                >
+                  <motion.div
+                    className="absolute inset-0 rounded-full"
+                    style={{ border: "2px dashed rgba(255, 0, 255, 0.5)" }}
+                    animate={{ rotate: [0, 360] }}
+                    transition={{ duration: 20, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                  />
+                  <div className="text-center p-6">
+                    <motion.div
+                      className="text-4xl md:text-5xl font-bold text-white mb-1"
+                      animate={{
+                        textShadow: [
+                          "0 0 10px rgba(255, 0, 255, 0.8)",
+                          "0 0 15px rgba(255, 0, 255, 0.8)",
+                          "0 0 10px rgba(255, 0, 255, 0.8)",
+                        ],
+                      }}
+                      transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+                    >
+                      LIVE
+                    </motion.div>
+                    <div className="text-pink-300 text-sm">毎日開催</div>
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* 配信時間の詳細 */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <motion.div
+                  className="bg-gradient-to-br from-purple-900/30 to-blue-900/30 p-6 rounded-xl border border-purple-500/30 relative overflow-hidden"
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <motion.div
+                    className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-purple-500/10"
+                    animate={{
+                      scale: [1, 1.2, 1],
+                      opacity: [0.1, 0.2, 0.1],
+                    }}
+                    transition={{ duration: 5, repeat: Number.POSITIVE_INFINITY }}
+                  />
+
+                  <div className="flex items-start gap-4">
+                    <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-3 rounded-lg">
+                      <Clock className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <h4 className="text-xl font-bold text-purple-300 mb-2">配信時間</h4>
+                      <div className="space-y-2 text-gray-200">
+                        <div className="flex items-center gap-2">
+                          <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
+                            23:00〜24:00
+                          </span>
+                          <span className="text-gray-400">頃から開始</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">
+                            2:00〜2:30
+                          </span>
+                          <span className="text-gray-400">頃まで</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  className="bg-gradient-to-br from-pink-900/30 to-red-900/30 p-6 rounded-xl border border-pink-500/30 relative overflow-hidden"
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <motion.div
+                    className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-pink-500/10"
+                    animate={{
+                      scale: [1, 1.2, 1],
+                      opacity: [0.1, 0.2, 0.1],
+                    }}
+                    transition={{ duration: 5, repeat: Number.POSITIVE_INFINITY, delay: 0.5 }}
+                  />
+
+                  <div className="flex items-start gap-4">
+                    <div className="bg-gradient-to-r from-pink-500 to-red-500 p-3 rounded-lg">
+                      <Zap className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <h4 className="text-xl font-bold text-pink-300 mb-2">特別配信</h4>
+                      <p className="text-gray-300 mb-3">たまに朝方までのロング配信や、特別企画も実施！お見逃しなく！</p>
+                      <div className="flex flex-wrap gap-2">
+                        {["ゲーム実況", "雑談", "音楽", "コラボ", "視聴者参加"].map((tag, index) => (
+                          <span
+                            key={index}
+                            className="bg-gradient-to-r from-pink-500/20 to-red-500/20 px-3 py-1 rounded-full text-sm text-pink-200 border border-pink-500/30"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* プラットフォーム */}
               <motion.div
-                key={index}
-                className={`bg-gradient-to-br ${schedule.color} p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 relative overflow-hidden`}
-                whileHover={{
-                  scale: 1.05,
-                  boxShadow: "0 0 20px rgba(255, 0, 255, 0.5)",
-                }}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="mt-10 text-center"
               >
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-br from-transparent to-black/30"
-                  animate={{
-                    opacity: [0.3, 0.5, 0.3],
-                    transition: { duration: 3, repeat: Number.POSITIVE_INFINITY },
-                  }}
-                />
-                <div className="relative z-10">
-                  <div className="flex items-center mb-4">
-                    <Calendar className="w-6 h-6 text-white mr-2" />
-                    <h3 className="text-xl font-bold text-white font-display">{schedule.day}</h3>
-                  </div>
-                  <p className="text-white/90 mb-2">{schedule.time}</p>
-                  <p className="text-white font-medium">{schedule.content}</p>
+                <h4 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 mb-6">
+                  配信プラットフォーム
+                </h4>
+                <div className="flex flex-wrap justify-center gap-4">
+                  {[
+                    { icon: <Twitch className="h-6 w-6" />, name: "Twitch", color: "from-purple-600 to-pink-600" },
+                    { icon: <Youtube className="h-6 w-6" />, name: "YouTube", color: "from-red-600 to-orange-600" },
+                  ].map((platform, index) => (
+                    <motion.a
+                      key={index}
+                      href="#"
+                      className={`flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r ${platform.color} text-white font-bold relative overflow-hidden`}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <motion.span
+                        className="absolute inset-0 bg-white/10"
+                        animate={{
+                          opacity: [0, 0.2, 0],
+                          transition: { duration: 2, repeat: Number.POSITIVE_INFINITY, delay: index * 0.5 },
+                        }}
+                      />
+                      {platform.icon}
+                      <span>{platform.name}</span>
+                    </motion.a>
+                  ))}
                 </div>
-                <motion.div
-                  className="absolute -bottom-2 -right-2 w-12 h-12 rounded-full bg-white/10"
-                  animate={{
-                    scale: [1, 1.5, 1],
-                    opacity: [0.1, 0.3, 0.1],
-                    transition: { duration: 3, repeat: Number.POSITIVE_INFINITY },
-                  }}
-                />
               </motion.div>
-            ))}
+
+              {/* 注意書き */}
+              <p className="text-gray-400 text-center mt-8 text-sm">
+                ※配信時間は変更になる場合があります。最新情報はSNSをチェックしてください。
+              </p>
+            </div>
           </motion.div>
 
           <motion.div
@@ -496,9 +614,10 @@ export default function Home() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="mt-12 text-center"
           >
-            <p className="text-gray-400 mb-6">
-              ※配信スケジュールは変更になる場合があります。最新情報はSNSをチェックしてください。
-            </p>
+            <Button className="bg-gradient-to-r from-purple-600 via-pink-600 to-yellow-600 hover:from-purple-700 hover:via-pink-700 hover:to-yellow-700 text-white font-bold relative overflow-hidden group">
+              <span className="relative z-10">SUBSCRIBE TO CHANNEL</span>
+              <span className="absolute inset-0 bg-gradient-to-r from-pink-500 via-yellow-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
+            </Button>
           </motion.div>
         </div>
       </ParallaxSection>
@@ -906,7 +1025,7 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            KYOHEI
+            KyoHey
           </motion.h2>
           <p className="text-gray-400 mb-6">WELCOME TO THE SUGIYAMA HOUSE</p>
           <div className="flex justify-center space-x-4 mb-6">

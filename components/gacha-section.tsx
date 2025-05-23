@@ -22,34 +22,6 @@ export function GachaSection() {
           transition={{ duration: 15, repeat: Number.POSITIVE_INFINITY }}
         />
       </div>
-
-      {/* 装飾的な光の粒子 */}
-      {[...Array(20)].map((_, i) => (
-        <motion.div
-          key={`particle-${i}`}
-          className="absolute w-2 h-2 rounded-full bg-white opacity-70 z-10"
-          style={{
-            top: `${Math.random() * 100}%`,
-            left: `${Math.random() * 100}%`,
-            filter: `blur(1px) hue-rotate(${Math.random() * 360}deg)`,
-          }}
-          animate={{
-            scale: [0.8, 1.2, 0.8],
-            opacity: [0.3, 0.7, 0.3],
-            filter: [
-              `blur(1px) hue-rotate(${Math.random() * 360}deg)`,
-              `blur(2px) hue-rotate(${Math.random() * 360 + 180}deg)`,
-              `blur(1px) hue-rotate(${Math.random() * 360}deg)`,
-            ],
-          }}
-          transition={{
-            duration: 3 + Math.random() * 5,
-            repeat: Number.POSITIVE_INFINITY,
-            delay: Math.random() * 2,
-          }}
-        />
-      ))}
-
       <div className="max-w-6xl mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
