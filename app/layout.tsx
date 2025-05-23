@@ -4,8 +4,8 @@ import { ThemeProvider } from "@/components/theme-provider"
 
 // メタデータを更新して、ガチャ機能を含むことを示す
 export const metadata = {
-  title: "きょうへい - ライブ配信者 | ガチャコレクション",
-  description: "サイケデリックな世界へようこそ - きょうへいの公式ウェブサイト。限定アイテムのガチャも楽しめます！",
+  title: "KyoHey - ライブ配信者",
+  description: "KyoHeyの公式ウェブサイト。限定アイテムのガチャも！",
     generator: 'v0.dev'
 }
 
