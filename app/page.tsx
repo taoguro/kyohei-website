@@ -599,7 +599,7 @@ export default function Home() {
 
               {/* 注意書き */}
               <p className="text-gray-400 text-center mt-8 text-sm">
-                ※配信時間は変更になる場合があります。最新情報はSNSをチェックしてください。
+                ※配信時間は変更になる場合があります。最新情報はSNSをチェック！
               </p>
             </div>
           </motion.div>
