@@ -661,6 +661,11 @@ export function GachaMachine() {
               style={{ boxShadow: "0 0 50px rgba(255,215,0,0.7)" }}
               onClick={(e) => e.stopPropagation()}
             >
+               {/* 閉じるボタン */}
+              <button
+                onClick={closeCompleteModal}
+                className="absolute top-4 right-4 text-black bg-yellow-400 rounded-full p-1 hover:bg-yellow-300 transition-colors z-20"
+              ></button>
               {/* 背景エフェクト */}
               <motion.div
                 className="absolute inset-0 opacity-30"

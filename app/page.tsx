@@ -446,9 +446,6 @@ export default function Home() {
                       毎日配信
                     </h3>
                   </div>
-                  <p className="text-lg text-gray-300 max-w-md">
-                    きょうへいの配信は毎日行われています。ゲーム実況、雑談、音楽など様々なコンテンツをお楽しみください。
-                  </p>
                 </div>
 
                 <motion.div
