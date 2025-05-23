@@ -201,7 +201,7 @@ export default function Home() {
                 transition: { duration: 3, repeat: Number.POSITIVE_INFINITY },
               }}
             >
-              WELCOME TO THE SUGIYAMA HOUSE
+              KyoHey NO HOME PEGI DESU
             </motion.p>
             <p className="text-base md:text-lg mb-6 md:mb-8 max-w-lg text-gray-300">
               ゲーム実況、トーク、音楽など多彩なコンテンツを配信中！ あなたの日常に刺激と興奮をお届けします。
@@ -1024,7 +1024,7 @@ export default function Home() {
           >
             KyoHey
           </motion.h2>
-          <p className="text-gray-400 mb-6">WELCOME TO THE SUGIYAMA HOUSE</p>
+          <p className="text-gray-400 mb-6">KyoHey NO HOME PEGI DESU</p>
           <div className="flex justify-center space-x-4 mb-6">
             {[
               <Twitch key="twitch" className="w-5 h-5" />,
