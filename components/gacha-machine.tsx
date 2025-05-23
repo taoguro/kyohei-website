@@ -33,7 +33,7 @@ const GACHA_ITEMS: GachaItem[] = [
   {
     id: 2,
     name: "きょうへいのイラスト",
-    description: "きょうへい本人はこのイラストのままです",
+    description: "このイラストは絵です",
     image: "/images/ガチャガチャ/イラスト.svg",
     rarity: "common",
   },
@@ -47,7 +47,7 @@ const GACHA_ITEMS: GachaItem[] = [
   {
     id: 4,
     name: "フリップきょうへい",
-    description: "吉本興業所属",
+    description: "すべらないきょうへい",
     image: "/images/ガチャガチャ/お笑い.svg",
     rarity: "rare",
   },
