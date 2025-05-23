@@ -511,13 +511,13 @@ export default function Home() {
                           <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
                             23:00〜24:00
                           </span>
-                          <span className="text-gray-400">頃から開始</span>
+                          <span className="text-gray-400">開始</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">
                             2:00〜2:30
                           </span>
-                          <span className="text-gray-400">頃まで</span>
+                          <span className="text-gray-400">終了</span>
                         </div>
                       </div>
                     </div>
